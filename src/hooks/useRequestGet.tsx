@@ -2,14 +2,12 @@ import {  useEffect, useState } from "react";
 import { api } from "../services/api";
 import { getUserLocalStorage } from "../context/AuthProvider/util";
 
-
-
 export const useRequestGet =  <T extends object>(init: T, apiUrl: string, param?: string) => {
     const [data, setData] = useState(init); 
     const [loading, setLoading] = useState(true);
     const auth = getUserLocalStorage();
   
-    const apiUrlModifier = apiUrl + (param !== undefined && param !== null ? `/${param}` : '');
+    const apiUrlModifier = apiUrl + (param !== undefined && param !== null ? `/:${param}` : '');
   
     useEffect(() => {
       const fetchData = async () => {
@@ -28,9 +26,7 @@ export const useRequestGet =  <T extends object>(init: T, apiUrl: string, param?
           setLoading(false);
         }
       };
-  
       fetchData();
-      console.log('chamou a função get');
     }, [apiUrlModifier, auth?.username]);
   
     return { 

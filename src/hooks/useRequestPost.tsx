@@ -1,28 +1,26 @@
-import { FormEvent,  useState } from "react";
+import {   FormEvent,   useState } from "react";
 import { getUserLocalStorage } from "../context/AuthProvider/util";
 import { api } from "../services/api";
 import { useToast } from "@chakra-ui/react";
-import { useNavigate } from "react-router-dom";
 
 export const useRequestPost = <T extends object> (init: T, url: string, param?: string) => {
-    const [ data ] = useState(init); 
+    const [ data, setData ] = useState(init); 
     const [loading, setLoading] = useState(true);
     const auth = getUserLocalStorage()
     const toast = useToast();
-    const navigate = useNavigate();
-    const apiUrl = url + '/' + param;
-  
+    const apiUrlModifier = url + (param !== undefined && param !== null ? `/${param}` : '');
+
+    const config = {
+        headers: {
+          Authorization: `Bearer ${auth?.token}`,
+        },
+    };
     
     const handleSubmit = async (e: FormEvent) => {
-        e.preventDefault();
+        e.preventDefault();      
 
-        const config = {
-            headers: {
-              Authorization: `Bearer ${auth?.token}`,
-            },
-        };
         await api
-            .post(apiUrl, data, config)
+            .post(apiUrlModifier, data, config)
             .then((response) => {
                 if (response.status === 200) {
                     toast({
@@ -33,10 +31,11 @@ export const useRequestPost = <T extends object> (init: T, url: string, param?: 
                         isClosable: true,
                         position: 'top',
                     });
-                    
-                    setLoading(!loading);
-                    navigate("/session/posts");
-                    
+                    setData({
+                        ...data,
+                        
+                    });
+                    setLoading(!loading);              
 
                 } else {
                     toast({
@@ -54,7 +53,7 @@ export const useRequestPost = <T extends object> (init: T, url: string, param?: 
                 console.error(error);
                 toast({
                     title: 'Erro',
-                    description: 'Dados não enviados.',
+                    description: 'Catch insert: Dados não enviados.',
                     status: 'error',
                     duration: 2000,
                     isClosable: true,
@@ -66,7 +65,6 @@ export const useRequestPost = <T extends object> (init: T, url: string, param?: 
                 setLoading(!loading);  
             })            
     }
-
   
         return { 
         data,

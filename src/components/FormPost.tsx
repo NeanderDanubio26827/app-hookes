@@ -2,6 +2,7 @@ import {
 
     Flex,
     Button,
+    useToast,
     //useToast,
 
 } from '@chakra-ui/react'
@@ -9,17 +10,17 @@ import {
 import { MyInput } from './MyInput'
 import { useForm } from '../hooks/useForm';
 import { IFormGetAPI } from '../pages/Posts';
-//import { api } from '../services/api';
-//import { FormEvent, useState } from 'react';
+import { api } from '../services/api';
+import { FormEvent, useState } from 'react';
 import { getUserLocalStorage } from '../context/AuthProvider/util';
-//import { Navigate } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 import { useRequestPost } from '../hooks/useRequestPost';
 
 export const FormPost: React.FC<IFormGetAPI> = () => {
-    /* const toast = useToast();
+    const toast = useToast();
     const auth = getUserLocalStorage()
     const [isButton, setIsButton] = useState(true);
-    const [isLoading, setIsLoading] = useState(false); */
+    const [isLoading, setIsLoading] = useState(false);
     const { formData, handleChange } = useForm<IFormGetAPI>({
         Id: 0,
         IdUser: 0,
@@ -28,14 +29,14 @@ export const FormPost: React.FC<IFormGetAPI> = () => {
         username: '',
         updatedAt: '',
         createdAt: '',
-    })
+    });
     const { Title, Text } = formData;
 
     const data = { Title: Title, Text: Text , IdUser: getUserLocalStorage()?.IdUser, username: getUserLocalStorage()?.username };
 
-    const { handleSubmit } = useRequestPost(data, '/session/insertPost', ''); 
-
-    /* const handleSubmit = async (e: FormEvent) => {
+    //const { handleSubmit } = useRequestPost(datas, '/session/insertPost'); 
+    
+    const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
 
         const config = {
@@ -89,7 +90,7 @@ export const FormPost: React.FC<IFormGetAPI> = () => {
                 setIsButton(!isButton)
             });
     }
- */
+
     return (
         <Flex
             w={{ xl: '450px', lg: "450px", md: "450px", sm: '350px', base: '350px' }}
